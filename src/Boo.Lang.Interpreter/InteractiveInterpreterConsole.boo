@@ -261,9 +261,10 @@ class InteractiveInterpreterConsole:
 	protected def Delete(count as int): #if count is 0, forward-delete
 		cx = Console.CursorLeft+(Console.CursorTop-originalYPosition)*Console.WindowWidth-len(CurrentPrompt)-count
 		return if cx < len(CurrentPrompt) and count == 0 		
+		return if cx >= LineLen
 		dcount = (count if count != 0 else 1)
 		_line.Remove(cx, dcount)
-		curX = Console.CursorLeft - dcount
+		curX = Console.CursorLeft - count
 		curY = Console.CursorTop
 		if curX < 0:
 			curX = Console.WindowWidth-1
@@ -384,7 +385,16 @@ class InteractiveInterpreterConsole:
 					DisplaySuggestions()
 				else:
 					Indent()
-
+			
+			# delete the whole line
+			if key == ConsoleKey.Escape:
+				curX = len(CurrentPrompt)
+				sizeL = _line.Length
+				_line.Remove(0, sizeL)
+				Console.CursorLeft = curX
+				Console.Write(string(' '[0], sizeL))
+				Console.CursorLeft = curX
+			
 			#line-editing support
 			if not _multiline and LineLen > 0:
 				if Console.CursorLeft+(Console.CursorTop-originalYPosition)*Console.WindowWidth > len(CurrentPrompt):
