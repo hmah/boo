@@ -885,9 +885,9 @@ _loop433_breakloop:						;
 		
 		try {      // for error handling
 			s=macro_stmt();
-			if (s != null && 0==inputState.guessing)
+			if (0==inputState.guessing)
 			{
-				module.Globals.Add(s);
+				if (s != null) module.Globals.Add(s);
 			}
 		}
 		catch (RecognitionException ex)
